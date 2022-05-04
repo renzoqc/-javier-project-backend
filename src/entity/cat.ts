@@ -1,9 +1,8 @@
 import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, DeleteDateColumn, BaseEntity } from "typeorm";
 
-@Entity('gato')
-export class Gato extends BaseEntity {
-
-    @PrimaryGeneratedColumn()
+@Entity('cat')
+export class Cat extends BaseEntity {
+    @PrimaryGeneratedColumn({ type: 'bigint' })
     id: number;
 
     @Column({name: 'nombre'})
