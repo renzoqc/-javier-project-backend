@@ -25,65 +25,38 @@ export class CatService {
             throw error;
         }
     };
-}
 
-// export const getCatsService = async () =>{
-//     try {
-//         const CatRepository = AppDataSource.getRepository(Cat)
-//         const getCats = await CatRepository.find()
-//         return getCats;
-//     } catch (error) {
-//         throw error
-//     }
-// }
-//
-// export const getCatService = async () =>{
-//     try {
-//         const { id } = req.params;
-//         const CatRepository = AppDataSource.getRepository(Cat)
-//         const getCat = await CatRepository.findOneBy({id: parseInt(id)})
-//         return getCat;
-//     } catch (error) {
-//         throw error
-//     }
-// }
-//
-// export const createCatsService = async (data: ICreateCat[]) => {
-//     try {
-//         const CatRepository = AppDataSource.getRepository(Cat)
-//         const created = await CatRepository.save(data)
-//         return created;
-//     } catch (error) {
-//         throw error
-//     }
-// };
-//
-// export const updateCatService = async () =>{
-//     try {
-//         const { id } = req.params;
-//         const CatRepository = AppDataSource.getRepository(Cat);
-//         const cat: any = await CatRepository.findOneBy({id: parseInt(id)});
-//
-//         if(cat) {
-//             CatRepository.merge(cat, req.body);
-//             const updateCat = await AppDataSource.getRepository(Cat).save(cat)
-//             return updateCat;
-//         }
-//         return {msg:"Gato no encontrado"}
-//
-//     } catch (error) {
-//         throw error
-//     }
-// };
-//
-//
-// export const deleteCatService = async () =>{
-//     try {
-//         const { id } = req.params;
-//         const CatRepository = AppDataSource.getRepository(Cat)
-//         const deleteCat = await CatRepository.delete({id: parseInt(id)})
-//         return deleteCat;
-//     } catch (error) {
-//         throw error
-//     }
-// };
+    async createCatsService(data: ICreateCat[]):Promise<any> {
+        try {
+            const created = await CatRepository.save(data)
+            return created;
+        } catch (error) {
+            throw error;
+        }
+    };
+    async updateCatService(req: Request, res: Response):Promise<any>{
+            try {               
+                const cat = await CatRepository.findOneBy({id: parseInt(req.params.id)});
+        
+                if(cat) {
+                    CatRepository.merge(cat, req.body);
+                    const updateCat = await AppDataSource.getRepository(Cat).save(cat)
+                    return updateCat;
+                }
+                else
+                    return {msg:"Gato no encontrado"};
+        
+            } catch (error) {
+                throw error
+            }
+        };
+
+    async deleteCatService(id: any):Promise<any>{
+        try {               
+            const deleteCat = await CatRepository.delete({id: parseInt(id)})
+            return deleteCat;
+        } catch (error) {
+            throw error
+        }
+    };
+}
