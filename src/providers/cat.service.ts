@@ -1,7 +1,7 @@
 import {Cat} from "../entity/cat";
-import {request, Request, response, Response} from "express";
-import { ICreateCat } from '../interfaces/cat.interface'
-import { AppDataSource } from '../db'
+import {Request, Response} from "express";
+import {ICreateCat} from '../interfaces/cat.interface'
+import {AppDataSource} from '../db'
 
 const CatRepository = AppDataSource.getRepository(Cat);
 
@@ -10,8 +10,7 @@ export class CatService {
 
     async getCatsService():Promise<any> {
         try {
-            const getCats = await CatRepository.find();
-            return getCats;
+            return await CatRepository.find();
         } catch (error) {
             throw error;
         }
@@ -19,8 +18,7 @@ export class CatService {
 
     async getCatService(id: any):Promise<any> {
         try {
-            const getCat = await CatRepository.findOneBy({id: parseInt(id)});
-            return getCat;
+            return await CatRepository.findOneBy({id: parseInt(id)});
         } catch (error) {
             throw error;
         }
@@ -28,33 +26,35 @@ export class CatService {
 
     async createCatsService(data: ICreateCat[]):Promise<any> {
         try {
-            const created = await CatRepository.save(data)
-            return created;
+            return await CatRepository.save(data);
         } catch (error) {
             throw error;
         }
     };
+
     async updateCatService(req: Request, res: Response):Promise<any>{
-            try {               
-                const cat = await CatRepository.findOneBy({id: parseInt(req.params.id)});
-        
-                if(cat) {
-                    CatRepository.merge(cat, req.body);
-                    const updateCat = await AppDataSource.getRepository(Cat).save(cat)
-                    return updateCat;
-                }
-                else
-                    return {msg:"Gato no encontrado"};
-        
-            } catch (error) {
-                throw error
+        try {
+            const cat = await CatRepository.findOneBy({id: parseInt(req.params.id)});
+
+            if(cat) {
+                CatRepository.merge(cat, req.body);
+                const updateCat = await AppDataSource.getRepository(Cat).save(cat)
+                return updateCat;
             }
-        };
+            return null;
+        } catch (error) {
+            throw error
+        }
+    };
 
     async deleteCatService(id: any):Promise<any>{
-        try {               
-            const deleteCat = await CatRepository.delete({id: parseInt(id)})
-            return deleteCat;
+        try {
+            const deletedCat = await CatRepository.delete({id: parseInt(id)})
+
+            if(deletedCat.affected === 0){
+                return false
+            }
+            return true;
         } catch (error) {
             throw error
         }
