@@ -38,8 +38,7 @@ export class CatService {
 
             if(cat) {
                 CatRepository.merge(cat, req.body);
-                const updateCat = await AppDataSource.getRepository(Cat).save(cat)
-                return updateCat;
+                return await CatRepository.save(cat)
             }
             return null;
         } catch (error) {
