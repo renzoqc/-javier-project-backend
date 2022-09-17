@@ -31,7 +31,7 @@ const router = Router();
  *          example:
  *              name: Alan
  *              size: 100
- *              house: Chorrillos
+ *              : Chorrillos
  *              owner: Javier
  */
 

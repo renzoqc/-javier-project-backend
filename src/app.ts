@@ -21,7 +21,7 @@ const swaggerSpec = {
 }
 const app = express();
 
-app.use(express.json());
+app.use(express.json()); //middleware que tranforma el req.body a un json
 app.use("/api", catRoutes);
 app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerSpec)))
 

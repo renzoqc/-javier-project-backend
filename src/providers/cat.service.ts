@@ -1,14 +1,15 @@
 import {Cat} from "../entity/cat";
 import {Request, Response} from "express";
-import {ICreateCat} from '../interfaces/cat.interface'
+import {ICreateCat, IGetErrorMessage} from '../interfaces/cat.interface'
 import {AppDataSource} from '../db'
+import { CatDto } from "src/dto/cat.dto";
 
 const CatRepository = AppDataSource.getRepository(Cat);
 
 export class CatService {
     constructor() {}
 
-    async getCatsService():Promise<any> {
+    async getCatsService():Promise<Cat[]> {
         try {
             return await CatRepository.find();
         } catch (error) {
@@ -16,15 +17,20 @@ export class CatService {
         }
     };
 
-    async getCatService(id: any):Promise<any> {
+    async getCatService(id: string):Promise<Cat | IGetErrorMessage> {
         try {
-            return await CatRepository.findOneBy({id: parseInt(id)});
+            const getCat:Cat | null = await CatRepository.findOneBy({id: parseInt(id)});
+
+            if(getCat){
+                return getCat
+            }
+            return {msg: "Gato no encontrado"}
         } catch (error) {
             throw error;
         }
     };
 
-    async createCatsService(data: ICreateCat[]):Promise<any> {
+    async createCatsService(data: ICreateCat[]):Promise<Cat[]> {
         try {
             return await CatRepository.save(data);
         } catch (error) {
@@ -32,13 +38,13 @@ export class CatService {
         }
     };
 
-    async updateCatService(req: Request, res: Response):Promise<any>{
+    async updateCatService(id: string, payload: CatDto):Promise<Cat | null>{
         try {
-            const cat = await CatRepository.findOneBy({id: parseInt(req.params.id)});
+            const updateCat: Cat | null = await CatRepository.findOneBy({id: parseInt(id)});
 
-            if(cat) {
-                CatRepository.merge(cat, req.body);
-                return await CatRepository.save(cat)
+            if(updateCat) {
+                CatRepository.merge(updateCat, payload);
+                return await CatRepository.save(updateCat)
             }
             return null;
         } catch (error) {
@@ -46,7 +52,7 @@ export class CatService {
         }
     };
 
-    async deleteCatService(id: any):Promise<any>{
+    async deleteCatService(id: string):Promise<true | false>{
         try {
             const deletedCat = await CatRepository.delete({id: parseInt(id)})
 
